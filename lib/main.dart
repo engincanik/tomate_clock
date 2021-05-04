@@ -32,8 +32,11 @@ class TomateClock extends StatefulWidget {
 
 class _TomateClockState extends State<TomateClock> {
   CountDownController _countDownController = CountDownController();
-  int duration = 10; //1500 for 25 minutes
+  CountDownController _breakController = CountDownController();
+  int pomodoroDuration = 2; //1500 for 25 minutes
+  int breakDuration = 300;
   bool _isRunning = false;
+  bool _isBreak = false;
   String buttonText = 'Start';
 
   @override
@@ -41,43 +44,73 @@ class _TomateClockState extends State<TomateClock> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CircularCountDownTimer(
-          width: 300,
-          height: 300,
-          duration: duration,
-          isReverse: true,
-          autoStart: false,
-          controller: _countDownController,
-          fillColor: Color(0xFFE63E3E),
-          ringColor: Color(0xFF333333),
-          onStart: () => _isRunning = true,
-          onComplete: () => {_isRunning = false, buttonText = 'Start'},
-        ),
+        _isBreak
+            ? CircularCountDownTimer(
+                width: 300,
+                height: 300,
+                duration: breakDuration,
+                isReverse: true,
+                autoStart: false,
+                textFormat: CountdownTextFormat.MM_SS,
+                isTimerTextShown: _isRunning,
+                controller: _breakController,
+                fillColor: Color(0xFF0390FC),
+                ringColor: Color(0xFF333333),
+                onStart: () => _isRunning = true,
+                onComplete: () => completeCountDown(),
+              )
+            : CircularCountDownTimer(
+                width: 300,
+                height: 300,
+                duration: pomodoroDuration,
+                isReverse: true,
+                autoStart: false,
+                textFormat: CountdownTextFormat.MM_SS,
+                controller: _countDownController,
+                isTimerTextShown: _isRunning,
+                fillColor: Color(0xFFE63E3E),
+                ringColor: Color(0xFF333333),
+                onStart: () => _isRunning = true,
+                onComplete: () => completeCountDown(),
+              ),
         SizedBox(
-          height: 100,
+          height: 50,
         ),
         ElevatedButton(
-          onPressed: () => {startCountDown(_countDownController, _isRunning)},
+          onPressed: () => {
+            startCountDown(_isBreak ? _breakController : _countDownController)
+          },
           child: Text(buttonText),
         ),
       ],
     );
   }
 
-  void startCountDown(CountDownController _controller, bool state) {
+  void completeCountDown() {
+    setState(() {
+      _isRunning = false;
+      buttonText = 'Start';
+      _isBreak = true;
+    });
+  }
+
+  void startCountDown(CountDownController _controller) {
     setState(() {
       switch (buttonText) {
         case 'Start':
           _controller.start();
           buttonText = 'Pause';
+          _isRunning = true;
           break;
         case 'Pause':
           _controller.pause();
           buttonText = 'Resume';
+          _isRunning = false;
           break;
         case 'Resume':
           _controller.resume();
           buttonText = 'Pause';
+          _isRunning = true;
           break;
       }
     });
