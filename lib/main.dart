@@ -33,8 +33,10 @@ class TomateClock extends StatefulWidget {
 class _TomateClockState extends State<TomateClock> {
   CountDownController _countDownController = CountDownController();
   CountDownController _breakController = CountDownController();
+  int pomodoroCount = 0;
+  int breakCount = 0;
   int pomodoroDuration = 2; //1500 for 25 minutes
-  int breakDuration = 300;
+  int breakDuration = 3; //300 for 5 minutes
   bool _isRunning = false;
   bool _isBreak = false;
   String buttonText = 'Start';
@@ -44,35 +46,47 @@ class _TomateClockState extends State<TomateClock> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _isBreak
-            ? CircularCountDownTimer(
-                width: 300,
-                height: 300,
-                duration: breakDuration,
-                isReverse: true,
-                autoStart: false,
-                textFormat: CountdownTextFormat.MM_SS,
-                isTimerTextShown: _isRunning,
-                controller: _breakController,
-                fillColor: Color(0xFF0390FC),
-                ringColor: Color(0xFF333333),
-                onStart: () => _isRunning = true,
-                onComplete: () => completeCountDown(),
-              )
-            : CircularCountDownTimer(
-                width: 300,
-                height: 300,
-                duration: pomodoroDuration,
-                isReverse: true,
-                autoStart: false,
-                textFormat: CountdownTextFormat.MM_SS,
-                controller: _countDownController,
-                isTimerTextShown: _isRunning,
-                fillColor: Color(0xFFE63E3E),
-                ringColor: Color(0xFF333333),
-                onStart: () => _isRunning = true,
-                onComplete: () => completeCountDown(),
-              ),
+        Text(
+          '🍅 count: $pomodoroCount',
+          style: TextStyle(fontSize: 24, color: Colors.amber),
+        ),
+        SizedBox(
+          height: 50,
+        ),
+        Visibility(
+          visible: _isBreak,
+          child: CircularCountDownTimer(
+            width: 300,
+            height: 300,
+            duration: breakDuration,
+            isReverse: true,
+            autoStart: false,
+            textFormat: CountdownTextFormat.MM_SS,
+            isTimerTextShown: _isRunning,
+            controller: _breakController,
+            fillColor: Color(0xFF0390FC),
+            ringColor: Color(0xFF333333),
+            onStart: () => _isRunning = true,
+            onComplete: () => completeCountDown(),
+          ),
+        ),
+        Visibility(
+          visible: !_isBreak,
+          child: CircularCountDownTimer(
+            width: 300,
+            height: 300,
+            duration: pomodoroDuration,
+            isReverse: true,
+            autoStart: false,
+            textFormat: CountdownTextFormat.MM_SS,
+            controller: _countDownController,
+            isTimerTextShown: _isRunning,
+            fillColor: Color(0xFFE63E3E),
+            ringColor: Color(0xFF333333),
+            onStart: () => _isRunning = true,
+            onComplete: () => completeCountDown(),
+          ),
+        ),
         SizedBox(
           height: 50,
         ),
@@ -90,7 +104,18 @@ class _TomateClockState extends State<TomateClock> {
     setState(() {
       _isRunning = false;
       buttonText = 'Start';
-      _isBreak = true;
+      if (_isBreak) {
+        _isBreak = false;
+        breakCount++;
+      } else {
+        _isBreak = true;
+        pomodoroCount++;
+      }
+      if (breakCount > 0 && pomodoroCount % 4 == 0) {
+        breakDuration = 8;
+      } else {
+        breakDuration = 3;
+      }
     });
   }
 
