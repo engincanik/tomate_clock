@@ -35,8 +35,8 @@ class _TomateClockState extends State<TomateClock> {
   CountDownController _breakController = CountDownController();
   int pomodoroCount = 0;
   int breakCount = 0;
-  int pomodoroDuration = 2; //1500 for 25 minutes
-  int breakDuration = 3; //300 for 5 minutes
+  int pomodoroDuration = 1500; //1500 for 25 minutes
+  int breakDuration = 300; //300 for 5 minutes
   bool _isRunning = false;
   bool _isBreak = false;
   String buttonText = 'Start';
@@ -112,9 +112,9 @@ class _TomateClockState extends State<TomateClock> {
         pomodoroCount++;
       }
       if (breakCount > 0 && pomodoroCount % 4 == 0) {
-        breakDuration = 8;
+        breakDuration = 1800;
       } else {
-        breakDuration = 3;
+        breakDuration = 300;
       }
     });
   }
