@@ -11,4 +11,4 @@ A pomodoro app made with Flutter. Used [**circular_countdown_timer**](https://pu
 
 | Pomodoro  | Break | Pause |
 | ------------- | ------------- | -------------|
-| <img src="screenshots/Screenshot_1620308848.png" width="200"> | <img src="screenshots/Screenshot_1620308852.png" width="200">  | <img src="screenshots/Screenshot_1620308861.png" width="200">
+| <img src="screenshots/Screenshot_1620308848.png" width="300"> | <img src="screenshots/Screenshot_1620308852.png" width="300">  | <img src="screenshots/Screenshot_1620308861.png" width="300">
